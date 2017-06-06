@@ -16,6 +16,7 @@ public class PatientComparator implements Comparator<Patient> {
 		Patient.PatientStatus s1 = o1.getStatus();
 		Patient.PatientStatus s2 = o2.getStatus();
 
+		//controllo che i pazienti si trovino effettivamente in uno dei 3 stati ammissibili : white, yellow, red
 		if ((s1 != Patient.PatientStatus.WHITE) && (s1 != Patient.PatientStatus.YELLOW)
 				&& (s1 != Patient.PatientStatus.RED))
 			throw new IllegalArgumentException(
@@ -30,7 +31,7 @@ public class PatientComparator implements Comparator<Patient> {
 			// same severity code ==> the one with the smallest time must be first
 			return o1.getQueueTime()-o2.getQueueTime() ;
 		} else if(s1==Patient.PatientStatus.RED) {
-			return -1 ;
+			return -1 ;									// <0 significa che passa per primo s1
 		} else if(s2==Patient.PatientStatus.RED) {
 			return +1 ;
 		} else if(s1==Patient.PatientStatus.YELLOW) {

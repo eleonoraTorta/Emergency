@@ -6,7 +6,8 @@ public class Patient {
 	
 	private String name ;
 	private PatientStatus status ;
-	private int queueTime ;
+	private int queueTime ;    // questa variabile memorizza quando il paziente e` entrato in coda (se e` entrato) 
+							  // istante in cui e` entrato in coda
 	
 	public Patient(String name) {
 		super();

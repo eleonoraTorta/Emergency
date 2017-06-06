@@ -22,7 +22,7 @@ public class Simulator {
 
 	// World model
 	private PriorityQueue<Patient> waitingRoom;
-	private int occupiedStudios = 0;
+	private int occupiedStudios = 0;				//gli studi sono equivalenti in questo esercizio
 
 	// Measures of Interest
 	private int patientsTreated = 0;
@@ -36,7 +36,7 @@ public class Simulator {
 		this.NS = NS;
 
 		this.queue = new PriorityQueue<>();
-		this.waitingRoom = new PriorityQueue<>(new PatientComparator());
+		this.waitingRoom = new PriorityQueue<>(new PatientComparator());  // gli passo una classe che e` un comparatore che valuta la priorita dei pazienti
 	}
 
 	public void addPatient(Patient patient, int time) {
@@ -92,7 +92,7 @@ public class Simulator {
 			
 			this.occupiedStudios++ ;
 			next.setStatus(PatientStatus.TREATING);
-			// eliminare i TIMEOUT FUTURI dalla coda degli eventi
+			// eliminare i TIMEOUT FUTURI dalla coda degli eventi (piu complicato)
 			queue.add(new Event(next, e.getTime()+duration, EventType.FREE_STUDIO)) ;
 		}
 		
@@ -113,6 +113,8 @@ public class Simulator {
 			
 		case YELLOW:
 			// diventa rosso
+			// per cambiare lo stato di un elemento da uno stato all'altro devo prima rimuoverlo dalla coda prioritaria in cui era 
+			// e poi riaggiungerlo con lo stato cambiato (perche la coda prioritaria si basa al momento in cui viene fatto l'add)
 			waitingRoom.remove(p) ;
 			p.setStatus(PatientStatus.RED);
 			waitingRoom.add(p) ;
@@ -128,7 +130,7 @@ public class Simulator {
 			
 		case OUT:
 		case TREATING:
-			// timeout arrivato troppo tardi, non serve più
+			// timeout arrivato troppo tardi, non serve piï¿½
 			// ignoriamolo
 			break ;
 		
@@ -159,7 +161,7 @@ public class Simulator {
 		else if(rand==2) p.setStatus(PatientStatus.YELLOW);
 		else if(rand==3) p.setStatus(PatientStatus.RED);
 		
-		// se c'è uno studio libero, lo mando in cura
+		// se c'ï¿½ uno studio libero, lo mando in cura
 		if(this.occupiedStudios<NS) {
 			
 			int duration = 0 ;
@@ -172,8 +174,8 @@ public class Simulator {
 			
 			this.occupiedStudios++ ;
 			p.setStatus(PatientStatus.TREATING);
-			
 			queue.add(new Event(p, e.getTime()+duration, EventType.FREE_STUDIO)) ;
+		
 		} else {
 			// se no, lo metto in lista d'attesa
 			// e schedulo l'azione di time-out
@@ -186,7 +188,7 @@ public class Simulator {
 			else if(p.getStatus()==PatientStatus.RED)
 				timeout = RED_TIMEOUT;
 
-			p.setQueueTime(e.getTime());
+			p.setQueueTime(e.getTime());  //il tempo si imposta PRIMA dell'aggiunta dell'elemnto alla coda prioritaria
 			waitingRoom.add(p) ;
 			
 			queue.add(new Event(p, e.getTime()+timeout, EventType.TIMEOUT)) ;
